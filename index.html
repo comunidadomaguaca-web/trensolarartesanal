@@ -63,7 +63,7 @@
   <!-- CONTENIDO PRINCIPAL -->
   <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
 
-    <!-- SECCIÓN 1: CATÁLOGO PARA PASAJEROS -->
+    <!-- SECCIÓN 1: CATÁLOGO PARA PASAJEROS (AIRTABLE GALLERY) -->
     <section id="tab-catalog" class="space-y-6">
       <!-- Banner Informativo -->
       <div class="bg-gradient-to-r from-amber-100 via-orange-100 to-amber-50 p-4 sm:p-6 rounded-2xl border border-amber-200/80 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -75,7 +75,7 @@
             Comprá a artesanos y agricultores mientras viajás
           </h2>
           <p class="text-sm text-stone-600 max-w-2xl">
-            Seleccioná tu producto, coordiná por WhatsApp y el productor local te esperará en el andén de la estación con tu pedido listo en el horario estipulado de parada.
+            Explorá el catálogo actualizado en tiempo real, coordiná tu pedido y el productor local te esperará en el andén de la estación en el horario estipulado de parada.
           </p>
         </div>
         <button onclick="switchTab('schedules')" class="whitespace-nowrap px-4 py-2 bg-[#B85B32] text-white text-xs font-semibold rounded-xl hover:bg-[#A04E29] transition-all shadow-sm flex items-center gap-2">
@@ -83,133 +83,154 @@
         </button>
       </div>
 
-      <!-- Filtros de Búsqueda -->
-      <div class="bg-white p-4 sm:p-5 rounded-2xl shadow-sm border border-stone-200 space-y-4">
-        <div class="flex flex-col md:flex-row gap-4 justify-between items-stretch md:items-center">
-          <!-- Buscador -->
-          <div class="relative flex-1">
-            <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-stone-400"></i>
-            <input 
-              id="search-input"
-              type="text" 
-              placeholder="Buscar ponchos, papas andinas, vasijas, agricultores..." 
-              oninput="renderCatalog()"
-              className="w-full pl-9 pr-4 py-2 text-sm bg-stone-50 border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#B85B32]/30 focus:border-[#B85B32]"
-            />
-          </div>
-
-          <!-- Filtro Categoría -->
-          <div class="flex items-center gap-2 overflow-x-auto pb-1 md:pb-0">
-            <span class="text-xs font-medium text-stone-500 uppercase flex items-center gap-1">
-              <i data-lucide="filter" class="w-3.5 h-3.5"></i> Tipo:
-            </span>
-            <div id="category-buttons" class="flex items-center gap-1">
-              <!-- Renderizado dinámico de categorías -->
-            </div>
-          </div>
-        </div>
-
-        <!-- Selector de Estaciones -->
-        <div class="pt-2 border-t border-stone-100">
-          <span class="text-xs font-medium text-stone-500 uppercase flex items-center gap-1 mb-2">
-            <i data-lucide="map-pin" class="w-3.5 h-3.5 text-[#B85B32]"></i> Filtrar por Estación de Entrega:
-          </span>
-          <div id="station-buttons" class="flex flex-wrap gap-2">
-            <!-- Renderizado dinámico de estaciones -->
-          </div>
-        </div>
-      </div>
-
-      <!-- Contenedor del Catálogo de Vendedores -->
-      <div id="catalog-container" class="space-y-8">
-        <!-- Renderizado dinámico por JS -->
+      <!-- Galería Embebida de Airtable -->
+      <div class="bg-white p-2 sm:p-4 rounded-2xl shadow-sm border border-stone-200 overflow-hidden">
+        <iframe class="airtable-embed rounded-xl" src="https://airtable.com/embed/applaQJhJKxfQ30ic/shrbMiWlWp30yaFDE?viewControls=on" frameborder="0" onmousewheel="" width="100%" height="650" style="background: transparent; border: 1px solid #e7e5e4;"></iframe>
       </div>
     </section>
 
-    <!-- SECCIÓN 2: PANEL DE CONTROL DEL VENDEDOR -->
+    <!-- SECCIÓN 2: PANEL DE CONTROL DEL VENDEDOR (CON LOGIN MAKE + AIRTABLE) -->
     <section id="tab-vendor" class="space-y-6 max-w-4xl mx-auto hidden">
-      <!-- Selector de Perfil Simulado -->
-      <div class="bg-amber-900 text-amber-100 p-4 rounded-2xl flex flex-col sm:flex-row justify-between items-center gap-3">
-        <div class="flex items-center gap-2 text-xs">
-          <i data-lucide="user-check" class="w-4 h-4 text-amber-300"></i>
-          <span>Simulando sesión como:</span>
+      
+      <!-- PANTALLA DE LOGIN DEL VENDEDOR -->
+      <div id="vendor-login-box" class="max-w-md mx-auto bg-white rounded-2xl border border-stone-200 shadow-sm p-6 sm:p-8 space-y-6">
+        <div class="text-center space-y-2">
+          <div class="w-12 h-12 bg-amber-100 text-[#B85B32] rounded-2xl flex items-center justify-center mx-auto border border-amber-200">
+            <i data-lucide="lock" class="w-6 h-6"></i>
+          </div>
+          <h2 class="text-xl font-bold text-stone-900">Acceso para Vendedores</h2>
+          <p class="text-xs text-stone-500">
+            Ingresá tu usuario o WhatsApp registrado y tu PIN de acceso para gestionar tu disponibilidad y productos.
+          </p>
         </div>
-        <select 
-          id="vendor-selector" 
-          onchange="changeCurrentVendor(this.value)"
-          class="bg-amber-950 text-white text-xs font-medium py-1.5 px-3 rounded-lg border border-amber-700 focus:outline-none"
-        >
-          <!-- Opciones dinámicas -->
-        </select>
+
+        <form id="vendor-login-form" onsubmit="handleVendorLogin(event)" class="space-y-4">
+          <div>
+            <label class="block text-[11px] font-bold text-stone-600 uppercase mb-1">Usuario / Teléfono registrado</label>
+            <input 
+              id="login-user" 
+              type="text" 
+              placeholder="Ej. 3884123456 o tu correo" 
+              required 
+              class="w-full px-3.5 py-2.5 text-sm bg-stone-50 border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#B85B32]/30 focus:border-[#B85B32]" 
+            />
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold text-stone-600 uppercase mb-1">PIN / Contraseña</label>
+            <input 
+              id="login-pin" 
+              type="password" 
+              placeholder="••••" 
+              required 
+              class="w-full px-3.5 py-2.5 text-sm bg-stone-50 border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#B85B32]/30 focus:border-[#B85B32]" 
+            />
+          </div>
+
+          <div id="login-error-msg" class="hidden p-3 rounded-xl bg-red-50 border border-red-200 text-xs text-red-700 font-medium">
+            Credenciales incorrectas o vendedor no encontrado.
+          </div>
+
+          <button 
+            id="login-submit-btn"
+            type="submit" 
+            class="w-full py-2.5 bg-[#8C3A27] hover:bg-[#722E1E] text-white text-xs font-bold uppercase tracking-wider rounded-xl transition-all shadow-sm flex items-center justify-center gap-2"
+          >
+            <span>Ingresar al Panel</span>
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </button>
+        </form>
+
+        <div class="pt-4 border-t border-stone-100 text-center">
+          <p class="text-[11px] text-stone-400">
+            ¿Todavía no tenés tus credenciales de productor local? Consultanos por el chat de soporte.
+          </p>
+        </div>
       </div>
 
-      <!-- Dashboard Vendedor -->
-      <div class="bg-white rounded-2xl border border-stone-200 shadow-sm p-6 space-y-6">
-        <!-- Header Perfil Vendedor -->
-        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-6 border-b border-stone-200">
-          <div>
-            <span class="text-xs font-bold text-[#B85B32] uppercase tracking-wider">Perfil de Vendedor Local</span>
-            <h2 id="vendor-panel-name" class="text-2xl font-bold text-stone-900">-</h2>
-            <p id="vendor-panel-info" class="text-xs text-stone-500 mt-0.5">-</p>
+      <!-- DASHBOARD VENDEDOR AUTENTICADO (Oculto hasta iniciar sesión) -->
+      <div id="vendor-dashboard-box" class="hidden space-y-6">
+        <!-- Barra de Sesión Activa -->
+        <div class="bg-amber-900 text-amber-100 p-4 rounded-2xl flex flex-col sm:flex-row justify-between items-center gap-3">
+          <div class="flex items-center gap-2 text-xs">
+            <i data-lucide="shield-check" class="w-4 h-4 text-emerald-400"></i>
+            <span>Sesión verificada con Airtable: <strong id="logged-vendor-badge" class="text-white">-</strong></span>
           </div>
-
-          <!-- Switch de Disponibilidad -->
-          <div class="bg-stone-50 p-4 rounded-xl border border-stone-200 flex items-center gap-4 w-full sm:w-auto justify-between">
-            <div>
-              <p class="text-xs font-bold text-stone-800">¿Asistirás hoy al andén?</p>
-              <p class="text-[11px] text-stone-500">Habilita tu stock en el catálogo del turista</p>
-            </div>
-            <button
-              id="vendor-toggle-btn"
-              onclick="toggleCurrentVendorStock()"
-              class="relative inline-flex h-7 w-14 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none bg-emerald-600"
-            >
-              <span id="vendor-toggle-dot" class="pointer-events-none inline-block h-6 w-6 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out translate-x-7"></span>
-            </button>
-          </div>
+          <button 
+            onclick="logoutVendor()"
+            class="bg-amber-950 hover:bg-black/40 text-amber-200 text-xs font-medium py-1.5 px-3 rounded-lg border border-amber-700 transition-colors flex items-center gap-1.5"
+          >
+            <i data-lucide="log-out" class="w-3.5 h-3.5"></i> Cerrar Sesión
+          </button>
         </div>
 
-        <!-- Banner de Estado de Stock -->
-        <div id="vendor-status-banner" class="p-4 rounded-xl text-xs font-medium flex items-center gap-3 bg-emerald-50 text-emerald-900 border border-emerald-200">
-          <!-- Dinámico por JS -->
-        </div>
+        <!-- Dashboard Vendedor -->
+        <div class="bg-white rounded-2xl border border-stone-200 shadow-sm p-6 space-y-6">
+          <!-- Header Perfil Vendedor -->
+          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-6 border-b border-stone-200">
+            <div>
+              <span class="text-xs font-bold text-[#B85B32] uppercase tracking-wider">Perfil de Vendedor Local</span>
+              <h2 id="vendor-panel-name" class="text-2xl font-bold text-stone-900">-</h2>
+              <p id="vendor-panel-info" class="text-xs text-stone-500 mt-0.5">-</p>
+            </div>
 
-        <!-- Formulario para agregar nuevo producto -->
-        <div class="bg-stone-50 p-5 rounded-xl border border-stone-200 space-y-4">
-          <h3 class="font-bold text-stone-800 text-sm flex items-center gap-2">
-            <i data-lucide="plus" class="w-4 h-4 text-[#B85B32]"></i> Publicar Nuevo Artículo (Máximo 6 por vendedor)
-          </h3>
-          
-          <form onsubmit="handleAddProduct(event)" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div>
-              <label class="block text-[11px] font-bold text-stone-600 uppercase mb-1">Nombre del Producto</label>
-              <input id="input-prod-name" type="text" placeholder="Ej. Queso de Cabra Criollo" required class="w-full px-3 py-2 text-xs bg-white border border-stone-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#B85B32]" />
-            </div>
-            <div>
-              <label class="block text-[11px] font-bold text-stone-600 uppercase mb-1">Precio ($ ARS)</label>
-              <input id="input-prod-price" type="number" placeholder="Ej. 4500" required class="w-full px-3 py-2 text-xs bg-white border border-stone-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#B85B32]" />
-            </div>
-            <div class="sm:col-span-2">
-              <label class="block text-[11px] font-bold text-stone-600 uppercase mb-1">Ruta Local de Imagen (ej. images/mi-producto.jpg)</label>
-              <input id="input-prod-img" type="text" placeholder="images/nuevo-producto.jpg" class="w-full px-3 py-2 text-xs bg-white border border-stone-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#B85B32]" />
-            </div>
-            <div class="sm:col-span-2">
-              <label class="block text-[11px] font-bold text-stone-600 uppercase mb-1">Descripción Breve</label>
-              <input id="input-prod-desc" type="text" placeholder="Detalles de elaboración, peso o materiales..." class="w-full px-3 py-2 text-xs bg-white border border-stone-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#B85B32]" />
-            </div>
-            <div class="sm:col-span-2 pt-1">
-              <button type="submit" class="px-4 py-2 bg-[#8C3A27] text-white text-xs font-semibold rounded-lg hover:bg-[#722E1E] transition-colors">
-                Guardar y Publicar
+            <!-- Switch de Disponibilidad -->
+            <div class="bg-stone-50 p-4 rounded-xl border border-stone-200 flex items-center gap-4 w-full sm:w-auto justify-between">
+              <div>
+                <p class="text-xs font-bold text-stone-800">¿Asistirás hoy al andén?</p>
+                <p class="text-[11px] text-stone-500">Habilita tu stock en el catálogo del turista</p>
+              </div>
+              <button
+                id="vendor-toggle-btn"
+                onclick="toggleCurrentVendorStock()"
+                class="relative inline-flex h-7 w-14 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none bg-emerald-600"
+              >
+                <span id="vendor-toggle-dot" class="pointer-events-none inline-block h-6 w-6 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out translate-x-7"></span>
               </button>
             </div>
-          </form>
-        </div>
+          </div>
 
-        <!-- Lista de Productos Publicados -->
-        <div>
-          <h3 id="vendor-products-title" class="font-bold text-stone-800 text-sm mb-3">Tus Productos Publicados</h3>
-          <div id="vendor-products-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <!-- Dinámico JS -->
+          <!-- Banner de Estado de Stock -->
+          <div id="vendor-status-banner" class="p-4 rounded-xl text-xs font-medium flex items-center gap-3 bg-emerald-50 text-emerald-900 border border-emerald-200">
+            <!-- Dinámico por JS -->
+          </div>
+
+          <!-- Formulario para agregar nuevo producto -->
+          <div class="bg-stone-50 p-5 rounded-xl border border-stone-200 space-y-4">
+            <h3 class="font-bold text-stone-800 text-sm flex items-center gap-2">
+              <i data-lucide="plus" class="w-4 h-4 text-[#B85B32]"></i> Publicar Nuevo Artículo (Máximo 6 por vendedor)
+            </h3>
+            
+            <form onsubmit="handleAddProduct(event)" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block text-[11px] font-bold text-stone-600 uppercase mb-1">Nombre del Producto</label>
+                <input id="input-prod-name" type="text" placeholder="Ej. Queso de Cabra Criollo" required class="w-full px-3 py-2 text-xs bg-white border border-stone-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#B85B32]" />
+              </div>
+              <div>
+                <label class="block text-[11px] font-bold text-stone-600 uppercase mb-1">Precio ($ ARS)</label>
+                <input id="input-prod-price" type="number" placeholder="Ej. 4500" required class="w-full px-3 py-2 text-xs bg-white border border-stone-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#B85B32]" />
+              </div>
+              <div class="sm:col-span-2">
+                <label class="block text-[11px] font-bold text-stone-600 uppercase mb-1">URL o Ruta de Imagen</label>
+                <input id="input-prod-img" type="text" placeholder="https://... o images/nuevo-producto.jpg" class="w-full px-3 py-2 text-xs bg-white border border-stone-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#B85B32]" />
+              </div>
+              <div class="sm:col-span-2">
+                <label class="block text-[11px] font-bold text-stone-600 uppercase mb-1">Descripción Breve</label>
+                <input id="input-prod-desc" type="text" placeholder="Detalles de elaboración, peso o materiales..." class="w-full px-3 py-2 text-xs bg-white border border-stone-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#B85B32]" />
+              </div>
+              <div class="sm:col-span-2 pt-1">
+                <button type="submit" class="px-4 py-2 bg-[#8C3A27] text-white text-xs font-semibold rounded-lg hover:bg-[#722E1E] transition-colors">
+                  Guardar y Publicar
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Lista de Productos Publicados -->
+          <div>
+            <h3 id="vendor-products-title" class="font-bold text-stone-800 text-sm mb-3">Tus Productos Publicados</h3>
+            <div id="vendor-products-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <!-- Dinámico JS -->
+            </div>
           </div>
         </div>
       </div>
@@ -600,6 +621,7 @@ export async function POST(request: Request) {
 
     // Renderizado de Filtros
     function renderCategoryButtons() {
+      if (!document.getElementById('category-buttons')) return;
       const container = document.getElementById('category-buttons');
       container.innerHTML = CATEGORIES.map(cat => `
         <button 
@@ -612,6 +634,7 @@ export async function POST(request: Request) {
     }
 
     function renderStationButtons() {
+      if (!document.getElementById('station-buttons')) return;
       const container = document.getElementById('station-buttons');
       container.innerHTML = STATIONS.map(st => `
         <button 
@@ -637,6 +660,7 @@ export async function POST(request: Request) {
 
     // Renderizar Catálogo de Turistas
     function renderCatalog() {
+      if (!document.getElementById('catalog-container')) return;
       const container = document.getElementById('catalog-container');
       const searchQuery = document.getElementById('search-input').value.toLowerCase().trim();
 
@@ -740,20 +764,101 @@ export async function POST(request: Request) {
       renderCatalog();
     }
 
-    // Renderizar Panel del Vendedor
+    // =========================================================================
+    // CONFIGURACIÓN DE WEBHOOK DE MAKE.COM PARA VALIDACIÓN EN AIRTABLE
+    // =========================================================================
+    const MAKE_WEBHOOK_URL = "https://hook.us1.make.com/TU_WEBHOOK_ID_AQUI"; // <-- REEMPLAZAR CON TU URL DE MAKE.COM
+    let authenticatedVendor = null;
+
     function renderVendorSelector() {
-      const select = document.getElementById('vendor-selector');
-      select.innerHTML = vendors.map(v => `<option value="${v.id}">${v.name} (${v.station})</option>`).join('');
-      select.value = currentVendorId;
+      // Mantenido por compatibilidad con init(), ahora se usa login
     }
 
-    function changeCurrentVendor(vendorId) {
-      currentVendorId = vendorId;
+    async function handleVendorLogin(e) {
+      e.preventDefault();
+      const userInput = document.getElementById('login-user').value.trim();
+      const pinInput = document.getElementById('login-pin').value.trim();
+      const errorBox = document.getElementById('login-error-msg');
+      const submitBtn = document.getElementById('login-submit-btn');
+
+      errorBox.classList.add('hidden');
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<span>Verificando en Airtable...</span>';
+
+      try {
+        // Si aún no configuraste la URL real de Make, permite probar con un usuario demo local
+        if (MAKE_WEBHOOK_URL.includes("TU_WEBHOOK_ID_AQUI")) {
+          await new Promise(r => setTimeout(r, 600));
+          if (userInput === "demo" && pinInput === "1234") {
+            authenticatedVendor = vendors[0];
+            showAuthenticatedDashboard();
+            return;
+          } else {
+            throw new Error("Configurá tu URL de Make.com en el código (o probá con usuario: demo / PIN: 1234).");
+          }
+        }
+
+        // Llamada real al Webhook de Make.com
+        const response = await fetch(MAKE_WEBHOOK_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'login',
+            usuario: userInput,
+            pin: pinInput
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error("Error de comunicación con el servidor de verificación.");
+        }
+
+        const data = await response.json();
+
+        // Se espera que Make responda: { "authenticated": true, "vendor": { ... } }
+        if (data && data.authenticated && data.vendor) {
+          authenticatedVendor = {
+            id: data.vendor.id || "airtable_v",
+            name: data.vendor.name || "Vendedor Local",
+            category: data.vendor.category || "Artesano",
+            station: data.vendor.station || "Purmamarca",
+            whatsapp: data.vendor.whatsapp || "",
+            isAvailable: data.vendor.isAvailable !== undefined ? data.vendor.isAvailable : true,
+            products: Array.isArray(data.vendor.products) ? data.vendor.products : []
+          };
+          showAuthenticatedDashboard();
+        } else {
+          throw new Error(data.message || "Usuario o PIN incorrectos en Airtable.");
+        }
+      } catch (err) {
+        errorBox.innerText = err.message;
+        errorBox.classList.remove('hidden');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<span>Ingresar al Panel</span><i data-lucide="arrow-right" class="w-4 h-4"></i>';
+        lucide.createIcons();
+      }
+    }
+
+    function showAuthenticatedDashboard() {
+      document.getElementById('vendor-login-box').classList.add('hidden');
+      document.getElementById('vendor-dashboard-box').classList.remove('hidden');
+      document.getElementById('logged-vendor-badge').innerText = authenticatedVendor.name;
       renderVendorPanel();
     }
 
+    function logoutVendor() {
+      authenticatedVendor = null;
+      document.getElementById('login-user').value = '';
+      document.getElementById('login-pin').value = '';
+      document.getElementById('vendor-dashboard-box').classList.add('hidden');
+      document.getElementById('vendor-login-box').classList.remove('hidden');
+      lucide.createIcons();
+    }
+
     function renderVendorPanel() {
-      const vendor = vendors.find(v => v.id === currentVendorId) || vendors[0];
+      if (!authenticatedVendor) return;
+      const vendor = authenticatedVendor;
 
       document.getElementById('vendor-panel-name').innerText = vendor.name;
       document.getElementById('vendor-panel-info').innerHTML = `Estación asignada: <strong>${vendor.station}</strong> • Categoría: <strong>${vendor.category}</strong>`;
@@ -793,7 +898,7 @@ export async function POST(request: Request) {
             <img src="${p.img}" alt="${p.name}" class="w-12 h-12 rounded-lg object-cover border" onerror="handleImgError(this)" />
             <div>
               <p class="font-bold text-xs text-stone-800">${p.name}</p>
-              <p class="text-xs text-emerald-700 font-semibold">$${p.price.toLocaleString('es-AR')}</p>
+              <p class="text-xs text-emerald-700 font-semibold">$${Number(p.price).toLocaleString('es-AR')}</p>
             </div>
           </div>
           <button 
@@ -808,24 +913,39 @@ export async function POST(request: Request) {
       lucide.createIcons();
     }
 
-    function toggleCurrentVendorStock() {
-      const vendor = vendors.find(v => v.id === currentVendorId);
-      if (vendor) {
-        vendor.isAvailable = !vendor.isAvailable;
-        renderVendorPanel();
-        renderCatalog();
+    async function toggleCurrentVendorStock() {
+      if (!authenticatedVendor) return;
+      authenticatedVendor.isAvailable = !authenticatedVendor.isAvailable;
+      renderVendorPanel();
+
+      // Notificar el cambio de disponibilidad a Make.com para actualizar Airtable
+      if (!MAKE_WEBHOOK_URL.includes("TU_WEBHOOK_ID_AQUI")) {
+        try {
+          await fetch(MAKE_WEBHOOK_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              action: 'toggle_stock',
+              vendorId: authenticatedVendor.id,
+              isAvailable: authenticatedVendor.isAvailable
+            })
+          });
+        } catch (e) {
+          console.error("Error sincronizando disponibilidad con Make:", e);
+        }
       }
     }
 
-    function handleAddProduct(e) {
+    async function handleAddProduct(e) {
       e.preventDefault();
+      if (!authenticatedVendor) return;
+
       const name = document.getElementById('input-prod-name').value.trim();
       const price = parseFloat(document.getElementById('input-prod-price').value);
       const img = document.getElementById('input-prod-img').value.trim();
       const desc = document.getElementById('input-prod-desc').value.trim();
 
-      const vendor = vendors.find(v => v.id === currentVendorId);
-      if (vendor.products.length >= 6) {
+      if (authenticatedVendor.products.length >= 6) {
         alert("Alcanzaste el límite de 6 productos para el catálogo express.");
         return;
       }
@@ -838,7 +958,7 @@ export async function POST(request: Request) {
         img: img || "images/producto-nuevo.jpg"
       };
 
-      vendor.products.push(newProd);
+      authenticatedVendor.products.push(newProd);
 
       document.getElementById('input-prod-name').value = '';
       document.getElementById('input-prod-price').value = '';
@@ -846,14 +966,46 @@ export async function POST(request: Request) {
       document.getElementById('input-prod-desc').value = '';
 
       renderVendorPanel();
-      renderCatalog();
+
+      // Enviar nuevo producto a Make.com para crear el registro en Airtable
+      if (!MAKE_WEBHOOK_URL.includes("TU_WEBHOOK_ID_AQUI")) {
+        try {
+          await fetch(MAKE_WEBHOOK_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              action: 'add_product',
+              vendorId: authenticatedVendor.id,
+              product: newProd
+            })
+          });
+        } catch (e) {
+          console.error("Error guardando producto en Make:", e);
+        }
+      }
     }
 
-    function deleteProduct(prodId) {
-      const vendor = vendors.find(v => v.id === currentVendorId);
-      vendor.products = vendor.products.filter(p => p.id !== prodId);
+    async function deleteProduct(prodId) {
+      if (!authenticatedVendor) return;
+      authenticatedVendor.products = authenticatedVendor.products.filter(p => p.id !== prodId);
       renderVendorPanel();
-      renderCatalog();
+
+      // Notificar eliminación a Make.com
+      if (!MAKE_WEBHOOK_URL.includes("TU_WEBHOOK_ID_AQUI")) {
+        try {
+          await fetch(MAKE_WEBHOOK_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              action: 'delete_product',
+              vendorId: authenticatedVendor.id,
+              productId: prodId
+            })
+          });
+        } catch (e) {
+          console.error("Error eliminando producto en Make:", e);
+        }
+      }
     }
 
     // Modal de Pedidos
