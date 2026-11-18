@@ -53,9 +53,6 @@
         <button id="nav-schedules" onclick="switchTab('schedules')" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all text-amber-100 hover:text-white hover:bg-white/10">
           <i data-lucide="clock" class="w-4 h-4"></i> Horarios Tren
         </button>
-        <a href="https://trensolarartesanal.lovable.app/" target="_blank" rel="noopener noreferrer" id="nav-backend" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all text-amber-100 hover:text-white hover:bg-white/10">
-          <i data-lucide="code" class="w-4 h-4"></i> Encuentro
-        </a>
       </nav>
     </div>
   </header>
@@ -85,7 +82,7 @@
 
       <!-- Galería Embebida de Airtable -->
       <div class="bg-white p-2 sm:p-4 rounded-2xl shadow-sm border border-stone-200 overflow-hidden">
-        <iframe class="airtable-embed rounded-xl" src="https://airtable.com/embed/applaQJhJKxfQ30ic/shrbMiWlWp30yaFDE?viewControls=on" frameborder="0" onmousewheel="" width="100%" height="650" style="background: transparent; border: 1px solid #e7e5e4;"></iframe>
+        <iframe class="airtable-embed rounded-xl" src="https://airtable.com/embed/applaQJhJKxfQ30ic/shrbMiWlWp30yaFDE?viewControls=on" frameborder="0" onmousewheel="" width="100%" height="2000" style="background: transparent; border: 1px solid #e7e5e4;"></iframe>
       </div>
     </section>
 
@@ -238,225 +235,37 @@
 
     <!-- SECCIÓN 3: CRONOGRAMA DE HORARIOS DEL TREN -->
     <section id="tab-schedules" class="space-y-6 max-w-5xl mx-auto hidden">
-      <div class="bg-white p-6 rounded-2xl border border-stone-200 shadow-sm space-y-2">
-        <span class="text-xs font-bold text-[#B85B32] uppercase tracking-wider">Horarios Oficiales</span>
-        <h2 class="text-2xl font-bold text-stone-900">Cronograma del Tren Solar de la Quebrada</h2>
-        <p class="text-xs text-stone-600">
-          Extraídos directamente de la programación de recorridos (Ruta A y Ruta B). Los artesanos y agricultores se presentan en el andén unos minutos antes del horario estipulado de llegada.
-        </p>
-      </div>
-
-      <!-- RUTA A -->
-      <div class="bg-white rounded-2xl border border-stone-200 shadow-sm overflow-hidden">
-        <div class="bg-[#8C3A27] text-white p-4">
-          <h3 class="font-bold text-base">Ruta A (Frecuencia Principal)</h3>
-        </div>
-        <div class="p-5 grid grid-cols-1 md:grid-cols-2 gap-6">
-          <!-- IDA -->
-          <div>
-            <h4 class="text-xs font-bold uppercase tracking-wider text-amber-700 mb-3 bg-amber-50 p-2 rounded-lg border border-amber-200/60 inline-block">
-              IDA: Volcán ➔ Tilcara
-            </h4>
-            <div class="space-y-2">
-              <div class="flex justify-between items-center text-xs p-2.5 bg-stone-50 rounded-lg border border-stone-100">
-                <span class="font-bold text-stone-800">Volcán</span>
-                <span class="text-stone-600">Salida: 09:00</span>
-              </div>
-              <div class="flex justify-between items-center text-xs p-2.5 bg-stone-50 rounded-lg border border-stone-100">
-                <span class="font-bold text-stone-800">Purmamarca</span>
-                <span class="text-stone-600">Llegada: 09:50 | Salida: 12:15</span>
-              </div>
-              <div class="flex justify-between items-center text-xs p-2.5 bg-stone-50 rounded-lg border border-stone-100">
-                <span class="font-bold text-stone-800">Maimará</span>
-                <span class="text-stone-600">Llegada: 12:55 | Salida: 13:55</span>
-              </div>
-              <div class="flex justify-between items-center text-xs p-2.5 bg-stone-50 rounded-lg border border-stone-100">
-                <span class="font-bold text-stone-800">Tilcara</span>
-                <span class="text-stone-600">Llegada: 14:10</span>
-              </div>
-            </div>
+      <!-- Encabezado y Selector Interactivo de Ruta en Tiempo Real -->
+      <div class="bg-white p-6 rounded-2xl border border-stone-200 shadow-sm space-y-5">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+          <div class="space-y-1">
+            <span class="text-xs font-bold text-[#B85B32] uppercase tracking-wider">Cronograma Oficial & Rastreo en Vivo</span>
+            <h2 class="text-2xl font-bold text-stone-900">Horarios y Ventanas de Encuentro</h2>
+            <p class="text-xs text-stone-600 max-w-2xl">
+              Calculamos automáticamente la <strong>Ventana de encuentro</strong> (tiempo efectivo entre llegada y salida en cada andén) para coordinar entregas sin demoras.
+            </p>
           </div>
 
-          <!-- VUELTA -->
-          <div>
-            <h4 class="text-xs font-bold uppercase tracking-wider text-stone-700 mb-3 bg-stone-100 p-2 rounded-lg border border-stone-200 inline-block">
-              VUELTA: Tilcara ➔ Volcán
-            </h4>
-            <div class="space-y-2">
-              <div class="flex justify-between items-center text-xs p-2.5 bg-stone-50 rounded-lg border border-stone-100">
-                <span class="font-bold text-stone-800">Tilcara</span>
-                <span class="text-stone-600">Salida: 15:50</span>
-              </div>
-              <div class="flex justify-between items-center text-xs p-2.5 bg-stone-50 rounded-lg border border-stone-100">
-                <span class="font-bold text-stone-800">Maimará</span>
-                <span class="text-stone-600">Llegada: 16:05 | Salida: 16:10</span>
-              </div>
-              <div class="flex justify-between items-center text-xs p-2.5 bg-stone-50 rounded-lg border border-stone-100">
-                <span class="font-bold text-stone-800">Hornillos</span>
-                <span class="text-stone-600">Llegada: 16:20 | Salida: 17:20</span>
-              </div>
-              <div class="flex justify-between items-center text-xs p-2.5 bg-stone-50 rounded-lg border border-stone-100">
-                <span class="font-bold text-stone-800">Tumbaya</span>
-                <span class="text-stone-600">Llegada: 18:20 | Salida: 19:20</span>
-              </div>
-              <div class="flex justify-between items-center text-xs p-2.5 bg-stone-50 rounded-lg border border-stone-100">
-                <span class="font-bold text-stone-800">Volcán</span>
-                <span class="text-stone-600">Llegada: 19:40</span>
-              </div>
-            </div>
+          <!-- Selector Ruta A / Ruta B -->
+          <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 bg-stone-100 p-1.5 rounded-xl border border-stone-200 w-full md:w-auto">
+            <button id="btn-route-A" onclick="selectTrainRoute('A')" class="px-4 py-2 rounded-lg text-xs font-bold transition-all bg-[#8C3A27] text-white shadow-sm">
+              🚂 Ruta A (Principal)
+            </button>
+            <button id="btn-route-B" onclick="selectTrainRoute('B')" class="px-4 py-2 rounded-lg text-xs font-bold transition-all text-stone-600 hover:text-stone-900">
+              🚂 Ruta B (Extendida)
+            </button>
           </div>
         </div>
-      </div>
 
-      <!-- RUTA B -->
-      <div class="bg-white rounded-2xl border border-stone-200 shadow-sm overflow-hidden">
-        <div class="bg-[#B85B32] text-white p-4">
-          <h3 class="font-bold text-base">Ruta B (Frecuencia Secundaria / Extendida)</h3>
-        </div>
-        <div class="p-5 grid grid-cols-1 md:grid-cols-2 gap-6">
-          <!-- IDA -->
-          <div>
-            <h4 class="text-xs font-bold uppercase tracking-wider text-amber-700 mb-3 bg-amber-50 p-2 rounded-lg border border-amber-200/60 inline-block">
-              IDA: Volcán ➔ Tilcara
-            </h4>
-            <div class="space-y-2">
-              <div class="flex justify-between items-center text-xs p-2.5 bg-stone-50 rounded-lg border border-stone-100">
-                <span class="font-bold text-stone-800">Volcán</span>
-                <span class="text-stone-600">Salida: 10:00</span>
-              </div>
-              <div class="flex justify-between items-center text-xs p-2.5 bg-stone-50 rounded-lg border border-stone-100">
-                <span class="font-bold text-stone-800">Tumbaya</span>
-                <span class="text-stone-600">Llegada: 10:20 | Salida: 11:20</span>
-              </div>
-              <div class="flex justify-between items-center text-xs p-2.5 bg-stone-50 rounded-lg border border-stone-100">
-                <span class="font-bold text-stone-800">Purmamarca</span>
-                <span class="text-stone-600">Llegada: 11:50 | Salida: 14:15</span>
-              </div>
-              <div class="flex justify-between items-center text-xs p-2.5 bg-stone-50 rounded-lg border border-stone-100">
-                <span class="font-bold text-stone-800">Hornillos</span>
-                <span class="text-stone-600">Llegada: 14:45 | Salida: 15:45</span>
-              </div>
-              <div class="flex justify-between items-center text-xs p-2.5 bg-stone-50 rounded-lg border border-stone-100">
-                <span class="font-bold text-stone-800">Maimará</span>
-                <span class="text-stone-600">Llegada: 15:55 | Salida: 16:55</span>
-              </div>
-              <div class="flex justify-between items-center text-xs p-2.5 bg-stone-50 rounded-lg border border-stone-100">
-                <span class="font-bold text-stone-800">Tilcara</span>
-                <span class="text-stone-600">Llegada: 17:10</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- VUELTA -->
-          <div>
-            <h4 class="text-xs font-bold uppercase tracking-wider text-stone-700 mb-3 bg-stone-100 p-2 rounded-lg border border-stone-200 inline-block">
-              VUELTA: Tilcara ➔ Volcán
-            </h4>
-            <div class="space-y-2">
-              <div class="flex justify-between items-center text-xs p-2.5 bg-stone-50 rounded-lg border border-stone-100">
-                <span class="font-bold text-stone-800">Tilcara</span>
-                <span class="text-stone-600">Salida: 18:50</span>
-              </div>
-              <div class="flex justify-between items-center text-xs p-2.5 bg-stone-50 rounded-lg border border-stone-100">
-                <span class="font-bold text-stone-800">Maimará</span>
-                <span class="text-stone-600">Llegada: 19:05 | Salida: 19:05</span>
-              </div>
-              <div class="flex justify-between items-center text-xs p-2.5 bg-stone-50 rounded-lg border border-stone-100">
-                <span class="font-bold text-stone-800">Hornillos</span>
-                <span class="text-stone-600">Llegada: 19:15 | Salida: 19:15</span>
-              </div>
-              <div class="flex justify-between items-center text-xs p-2.5 bg-stone-50 rounded-lg border border-stone-100">
-                <span class="font-bold text-stone-800">Purmamarca</span>
-                <span class="text-stone-600">Llegada: 19:45 | Salida: 19:50</span>
-              </div>
-              <div class="flex justify-between items-center text-xs p-2.5 bg-stone-50 rounded-lg border border-stone-100">
-                <span class="font-bold text-stone-800">Tumbaya</span>
-                <span class="text-stone-600">Llegada: 20:20 | Salida: 20:20</span>
-              </div>
-              <div class="flex justify-between items-center text-xs p-2.5 bg-stone-50 rounded-lg border border-stone-100">
-                <span class="font-bold text-stone-800">Volcán</span>
-                <span class="text-stone-600">Llegada: 20:40</span>
-              </div>
-            </div>
-          </div>
+        <!-- PANEL DE ESTADO ACTUAL DEL TREN ("¿Dónde está el tren ahora?") -->
+        <div id="live-train-status-card" class="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-amber-50 via-orange-50 to-stone-50 border border-amber-200/90 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <!-- Renderizado dinámico por JS según hora actual y ruta seleccionada -->
         </div>
       </div>
-    </section>
 
-    <!-- SECCIÓN 4: CÓDIGO BACKEND & ARQUITECTURA -->
-    <section id="tab-backend" class="space-y-6 max-w-5xl mx-auto hidden">
-      <div class="bg-white p-6 rounded-2xl border border-stone-200 shadow-sm space-y-2">
-        <span class="text-xs font-bold text-[#B85B32] uppercase tracking-wider">Arquitectura & Backend</span>
-        <h2 class="text-2xl font-bold text-stone-900">Código Next.js + Supabase + Vercel</h2>
-        <p class="text-xs text-stone-600">
-          Estructura completa para la implementación real fullstack de esta propuesta con Supabase DB y API Routes de Next.js.
-        </p>
-      </div>
-
-      <!-- Esquema SQL Supabase -->
-      <div class="bg-stone-900 text-stone-100 rounded-2xl p-5 shadow-sm space-y-3 font-mono text-xs overflow-x-auto">
-        <div class="flex justify-between items-center border-b border-stone-800 pb-2">
-          <span class="text-amber-400 font-bold">1. Esquema SQL para Supabase (Database Schema)</span>
-          <span class="text-stone-500 text-[10px]">supabase_schema.sql</span>
-        </div>
-        <pre class="text-emerald-400 leading-relaxed">
--- Tabla Vendedores
-CREATE TABLE vendors (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  name TEXT NOT NULL,
-  category TEXT CHECK (category IN ('Artesano', 'Agricultor')),
-  station TEXT NOT NULL,
-  whatsapp TEXT NOT NULL,
-  is_available BOOLEAN DEFAULT true,
-  bio TEXT,
-  avatar_url TEXT,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
-);
-
--- Tabla Productos
-CREATE TABLE products (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  vendor_id UUID REFERENCES vendors(id) ON DELETE CASCADE,
-  name TEXT NOT NULL,
-  price NUMERIC NOT NULL,
-  description TEXT,
-  image_url TEXT,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
-);</pre>
-      </div>
-
-      <!-- API Route Next.js /api/toggle-stock -->
-      <div class="bg-stone-900 text-stone-100 rounded-2xl p-5 shadow-sm space-y-3 font-mono text-xs overflow-x-auto">
-        <div class="flex justify-between items-center border-b border-stone-800 pb-2">
-          <span class="text-amber-400 font-bold">2. Next.js App Router: API Route `/app/api/toggle-stock/route.ts`</span>
-          <span class="text-stone-500 text-[10px]">Next.js 14+</span>
-        </div>
-        <pre class="text-blue-300 leading-relaxed">
-import { createClient } from '@supabase/supabase-js';
-import { NextResponse } from 'next/server';
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
-
-export async function POST(request: Request) {
-  try {
-    const { vendorId, isAvailable } = await request.json();
-
-    const { data, error } = await supabase
-      .from('vendors')
-      .update({ is_available: isAvailable })
-      .eq('id', vendorId)
-      .select();
-
-    if (error) throw error;
-
-    return NextResponse.json({ success: true, vendor: data[0] });
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
-  }
-}</pre>
+      <!-- CONTENEDOR DINÁMICO DEL CRONOGRAMA OFICIAL (IDA Y VUELTA DE LA RUTA SELECCIONADA) -->
+      <div id="route-schedule-container" class="space-y-6">
+        <!-- Renderizado dinámico con tabla de llegada, salida y ventana de encuentro -->
       </div>
     </section>
   </main>
@@ -595,10 +404,11 @@ export async function POST(request: Request) {
 
     // Navegación de pestañas
     function switchTab(tabId) {
-      ['catalog', 'vendor', 'schedules', 'backend'].forEach(t => {
+      ['catalog', 'vendor', 'schedules'].forEach(t => {
         const tabEl = document.getElementById(`tab-${t}`);
         const navEl = document.getElementById(`nav-${t}`);
         if (t === tabId) {
+          if (tabId === 'schedules' && typeof renderTrainSchedule === 'function') renderTrainSchedule();
           tabEl.classList.remove('hidden');
           navEl.className = "flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all bg-amber-100 text-[#8C3A27] font-semibold shadow-sm";
         } else {
@@ -609,6 +419,276 @@ export async function POST(request: Request) {
       lucide.createIcons();
     }
 
+
+    // =========================================================================
+    // LÓGICA DE CRONOGRAMA OFICIAL, VENTANA DE ENCUENTRO Y POSICIÓN DEL TREN
+    // =========================================================================
+    const TRAIN_SCHEDULES = {
+      A: {
+        name: "Ruta A (Frecuencia Principal)",
+        color: "#8C3A27",
+        ida: [
+          { station: "Volcán", arrival: null, departure: "09:00", note: "Estación de Origen" },
+          { station: "Purmamarca", arrival: "09:50", departure: "12:15", note: "Parada larga / Paseo" },
+          { station: "Maimará", arrival: "12:55", departure: "13:55", note: "Parada intermedia" },
+          { station: "Tilcara", arrival: "14:10", departure: null, note: "Fin tramo IDA" }
+        ],
+        vuelta: [
+          { station: "Tilcara", arrival: null, departure: "15:50", note: "Inicio retorno" },
+          { station: "Maimará", arrival: "16:05", departure: "16:10", note: "Parada rápida en andén" },
+          { station: "Hornillos", arrival: "16:20", departure: "17:20", note: "Posta de Hornillos" },
+          { station: "Tumbaya", arrival: "18:20", departure: "19:20", note: "Parada vespertina" },
+          { station: "Volcán", arrival: "19:40", departure: null, note: "Fin del servicio" }
+        ]
+      },
+      B: {
+        name: "Ruta B (Frecuencia Secundaria / Extendida)",
+        color: "#B85B32",
+        ida: [
+          { station: "Volcán", arrival: null, departure: "10:00", note: "Estación de Origen" },
+          { station: "Tumbaya", arrival: "10:20", departure: "11:20", note: "Parada matutina" },
+          { station: "Purmamarca", arrival: "11:50", departure: "14:15", note: "Parada larga / Almuerzo" },
+          { station: "Hornillos", arrival: "14:45", departure: "15:45", note: "Posta de Hornillos" },
+          { station: "Maimará", arrival: "15:55", departure: "16:55", note: "Parada intermedia" },
+          { station: "Tilcara", arrival: "17:10", departure: null, note: "Fin tramo IDA" }
+        ],
+        vuelta: [
+          { station: "Tilcara", arrival: null, departure: "18:50", note: "Inicio retorno" },
+          { station: "Maimará", arrival: "19:05", departure: "19:05", note: "Ascenso/descenso exprés" },
+          { station: "Hornillos", arrival: "19:15", departure: "19:15", note: "Ascenso/descenso exprés" },
+          { station: "Purmamarca", arrival: "19:45", departure: "19:50", note: "Parada rápida en andén" },
+          { station: "Tumbaya", arrival: "20:20", departure: "20:20", note: "Ascenso/descenso exprés" },
+          { station: "Volcán", arrival: "20:40", departure: null, note: "Fin del servicio" }
+        ]
+      }
+    };
+
+    let selectedTrainRouteKey = 'A';
+    let liveTrainInterval = null;
+
+    function timeToMinutes(hhmm) {
+      if (!hhmm) return null;
+      const [h, m] = hhmm.split(':').map(Number);
+      return h * 60 + m;
+    }
+
+    function formatWindowDuration(arr, dep) {
+      if (!arr && dep) return { label: "15 min previos (Pre-embarque)", mins: 15, badgeClass: "bg-amber-100 text-amber-800 border-amber-200" };
+      if (arr && !dep) return { label: "Al arribo (Descenso final)", mins: 15, badgeClass: "bg-stone-200 text-stone-700 border-stone-300" };
+      const diff = timeToMinutes(dep) - timeToMinutes(arr);
+      if (diff <= 0) {
+        return { label: "Parada exprés (< 1 min)", mins: 0, badgeClass: "bg-red-100 text-red-700 border-red-200" };
+      } else if (diff <= 10) {
+        return { label: `${diff} min (Entrega rápida)`, mins: diff, badgeClass: "bg-amber-100 text-amber-800 border-amber-200" };
+      } else {
+        const hrs = Math.floor(diff / 60);
+        const rem = diff % 60;
+        const text = hrs > 0 ? `${hrs}h ${rem > 0 ? rem + 'm' : ''} (${diff} min)` : `${diff} min`;
+        return { label: text, mins: diff, badgeClass: "bg-emerald-100 text-emerald-800 border-emerald-200" };
+      }
+    }
+
+    function selectTrainRoute(routeKey) {
+      selectedTrainRouteKey = routeKey;
+      const btnA = document.getElementById('btn-route-A');
+      const btnB = document.getElementById('btn-route-B');
+      if (routeKey === 'A') {
+        btnA.className = "px-4 py-2 rounded-lg text-xs font-bold transition-all bg-[#8C3A27] text-white shadow-sm";
+        btnB.className = "px-4 py-2 rounded-lg text-xs font-bold transition-all text-stone-600 hover:text-stone-900";
+      } else {
+        btnB.className = "px-4 py-2 rounded-lg text-xs font-bold transition-all bg-[#B85B32] text-white shadow-sm";
+        btnA.className = "px-4 py-2 rounded-lg text-xs font-bold transition-all text-stone-600 hover:text-stone-900";
+      }
+      renderTrainSchedule();
+    }
+
+    function computeLiveTrainPosition(routeKey) {
+      const route = TRAIN_SCHEDULES[routeKey];
+      const now = new Date();
+      const nowMins = now.getHours() * 60 + now.getMinutes();
+      const nowStr = now.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
+
+      const allStops = [
+        ...route.ida.map(s => ({ ...s, leg: "IDA (Volcán ➔ Tilcara)" })),
+        ...route.vuelta.map(s => ({ ...s, leg: "VUELTA (Tilcara ➔ Volcán)" }))
+      ];
+
+      const firstDep = timeToMinutes(allStops[0].departure);
+      const lastArr = timeToMinutes(allStops[allStops.length - 1].arrival);
+
+      if (nowMins < firstDep) {
+        const diff = firstDep - nowMins;
+        return {
+          nowStr,
+          status: "Antes del inicio de servicio",
+          headline: `Próxima salida desde ${allStops[0].station} a las ${allStops[0].departure} hs`,
+          detail: `Faltan ${diff} minutos para el primer embarque de la Ruta ${routeKey}.`,
+          activeStation: allStops[0].station,
+          badge: "En preparación",
+          badgeColor: "bg-amber-100 text-amber-800 border-amber-300"
+        };
+      }
+
+      if (nowMins > lastArr) {
+        return {
+          nowStr,
+          status: "Servicio finalizado por hoy",
+          headline: `El tren de la Ruta ${routeKey} completó su recorrido en ${allStops[allStops.length - 1].station} (${allStops[allStops.length - 1].arrival} hs)`,
+          detail: "Podés anticipar encargos para el cronograma de mañana.",
+          activeStation: null,
+          badge: "Finalizado",
+          badgeColor: "bg-stone-200 text-stone-700 border-stone-300"
+        };
+      }
+
+      for (let i = 0; i < allStops.length; i++) {
+        const stop = allStops[i];
+        const arrM = timeToMinutes(stop.arrival);
+        const depM = timeToMinutes(stop.departure);
+
+        if (arrM !== null && depM !== null && nowMins >= arrM && nowMins <= depM) {
+          const remaining = depM - nowMins;
+          return {
+            nowStr,
+            status: `¡EN ANDÉN AHORA! • ${stop.leg}`,
+            headline: `Detenido en Estación ${stop.station}`,
+            detail: remaining > 0
+              ? `Ventana de encuentro activa: quedan ${remaining} min antes de partir (${stop.departure} hs).`
+              : `Partiendo en este instante (${stop.departure} hs).`,
+            activeStation: stop.station,
+            activeLeg: stop.leg,
+            badge: "EN ANDÉN",
+            badgeColor: "bg-emerald-600 text-white border-emerald-700 animate-pulse"
+          };
+        }
+      }
+
+      for (let i = 0; i < allStops.length - 1; i++) {
+        const curr = allStops[i];
+        const next = allStops[i + 1];
+        const currDep = timeToMinutes(curr.departure ?? curr.arrival);
+        const nextArr = timeToMinutes(next.arrival ?? next.departure);
+
+        if (nowMins > currDep && nowMins < nextArr) {
+          const minsToNext = nextArr - nowMins;
+          if (curr.station === "Tilcara" && next.station === "Tilcara") {
+            return {
+              nowStr,
+              status: "Estacionado en cabecera Tilcara",
+              headline: `Esperando horario de retorno en Estación Tilcara`,
+              detail: `Parte de vuelta hacia Volcán a las ${next.departure} hs (en ${minsToNext} min).`,
+              activeStation: "Tilcara",
+              activeLeg: next.leg,
+              badge: "EN CABECERA",
+              badgeColor: "bg-amber-500 text-white border-amber-600"
+            };
+          }
+          return {
+            nowStr,
+            status: `EN RECORRIDO • ${next.leg}`,
+            headline: `Viajando de ${curr.station} ➔ ${next.station}`,
+            detail: `Llega al andén de ${next.station} a las ${next.arrival} hs (en ${minsToNext} min).`,
+            activeStation: next.station,
+            activeLeg: next.leg,
+            badge: "EN TRAYECTO",
+            badgeColor: "bg-blue-600 text-white border-blue-700"
+          };
+        }
+      }
+
+      return {
+        nowStr,
+        status: "En operación",
+        headline: `Consultando ubicación en Ruta ${routeKey}`,
+        detail: "Verificá los horarios en la tabla inferior.",
+        activeStation: null,
+        badge: "ACTIVO",
+        badgeColor: "bg-emerald-100 text-emerald-800"
+      };
+    }
+
+    function renderTrainSchedule() {
+      const statusCard = document.getElementById('live-train-status-card');
+      const container = document.getElementById('route-schedule-container');
+      if (!statusCard || !container) return;
+
+      const route = TRAIN_SCHEDULES[selectedTrainRouteKey];
+      const live = computeLiveTrainPosition(selectedTrainRouteKey);
+
+      statusCard.innerHTML = `
+        <div class="space-y-1">
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="text-[11px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full border ${live.badgeColor}">
+              ${live.badge}
+            </span>
+            <span class="text-xs font-semibold text-stone-600">Hora actual: <strong>${live.nowStr} hs</strong> • ${live.status}</span>
+          </div>
+          <h3 class="text-lg sm:text-xl font-bold text-stone-900">${live.headline}</h3>
+          <p class="text-xs text-stone-600">${live.detail}</p>
+        </div>
+        <button onclick="renderTrainSchedule()" class="shrink-0 px-3.5 py-2 bg-white hover:bg-amber-100 text-[#8C3A27] border border-amber-300 rounded-xl text-xs font-semibold flex items-center gap-1.5 shadow-xs transition-colors">
+          <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Actualizar hora
+        </button>
+      `;
+
+      const renderLegTable = (title, badgeText, badgeStyle, stops, legIdentifier) => `
+        <div class="bg-white rounded-2xl border border-stone-200 shadow-sm overflow-hidden">
+          <div class="p-4 border-b border-stone-100 flex flex-wrap justify-between items-center gap-2 bg-stone-50/70">
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg border ${badgeStyle}">
+                ${badgeText}
+              </span>
+              <h3 class="font-bold text-stone-800 text-sm sm:text-base">${title}</h3>
+            </div>
+            <span class="text-[11px] text-stone-500">Cronograma Oficial • Ruta ${selectedTrainRouteKey}</span>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="bg-stone-100/80 text-[11px] font-bold uppercase text-stone-600 border-b border-stone-200">
+                  <th class="py-3 px-4">Estación / Andén</th>
+                  <th class="py-3 px-4">Llegada</th>
+                  <th class="py-3 px-4">Salida</th>
+                  <th class="py-3 px-4">Ventana de Encuentro</th>
+                  <th class="py-3 px-4 hidden sm:table-cell">Observación</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-stone-100 text-xs">
+                ${stops.map(s => {
+                  const win = formatWindowDuration(s.arrival, s.departure);
+                  const isCurrent = live.activeStation === s.station && (!live.activeLeg || live.activeLeg === legIdentifier);
+                  return `
+                    <tr class="${isCurrent ? 'bg-amber-50/90 font-medium' : 'hover:bg-stone-50/70'} transition-colors">
+                      <td class="py-3 px-4 font-bold text-stone-900 flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full ${isCurrent ? 'bg-emerald-500 animate-ping' : 'bg-[#B85B32]'}"></span>
+                        ${s.station}
+                        ${isCurrent ? '<span class="text-[10px] font-bold bg-emerald-600 text-white px-2 py-0.5 rounded-full">Ubicación / Próxima</span>' : ''}
+                      </td>
+                      <td class="py-3 px-4 text-stone-700 font-mono">${s.arrival ? s.arrival + ' hs' : '—'}</td>
+                      <td class="py-3 px-4 text-stone-700 font-mono">${s.departure ? s.departure + ' hs' : '—'}</td>
+                      <td class="py-3 px-4">
+                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold border ${win.badgeClass}">
+                          <i data-lucide="hourglass" class="w-3 h-3"></i> ${win.label}
+                        </span>
+                      </td>
+                      <td class="py-3 px-4 text-stone-500 hidden sm:table-cell">${s.note}</td>
+                    </tr>
+                  `;
+                }).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+
+      container.innerHTML = `
+        ${renderLegTable("Tramo IDA: Volcán ➔ Tilcara", "IDA", "bg-amber-50 text-amber-800 border-amber-200", route.ida, "IDA (Volcán ➔ Tilcara)")}
+        ${renderLegTable("Tramo VUELTA: Tilcara ➔ Volcán", "VUELTA", "bg-stone-100 text-stone-700 border-stone-200", route.vuelta, "VUELTA (Tilcara ➔ Volcán)")}
+      `;
+
+      lucide.createIcons();
+    }
+
     // Inicialización del Renderizado
     function init() {
       renderCategoryButtons();
@@ -616,6 +696,8 @@ export async function POST(request: Request) {
       renderCatalog();
       renderVendorSelector();
       renderVendorPanel();
+      renderTrainSchedule();
+      if (!liveTrainInterval) liveTrainInterval = setInterval(renderTrainSchedule, 60000);
       lucide.createIcons();
     }
 
