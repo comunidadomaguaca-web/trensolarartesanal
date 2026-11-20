@@ -80,9 +80,21 @@
         </button>
       </div>
 
-      <!-- Galería Embebida de Airtable -->
-      <div class="bg-white p-2 sm:p-4 rounded-2xl shadow-sm border border-stone-200 overflow-hidden">
-        <iframe class="airtable-embed rounded-xl" src="https://airtable.com/embed/applaQJhJKxfQ30ic/shrbMiWlWp30yaFDE?viewControls=on" frameborder="0" onmousewheel="" width="100%" height="2000" style="background: transparent; border: 1px solid #e7e5e4;"></iframe>
+      <!-- Catálogo Dinámico vía Webhook de Make.com (Reemplaza el iframe de Airtable) -->
+      <div class="bg-white p-4 sm:p-6 rounded-2xl shadow-sm border border-stone-200 space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-stone-100 pb-3">
+          <div>
+            <h3 class="font-bold text-stone-900 text-base">Productos Disponibles</h3>
+            <p class="text-xs text-stone-500">Actualizados en tiempo real desde Airtable vía Make.com</p>
+          </div>
+          <button onclick="cargarCatalogoDisponible()" class="px-3 py-1.5 bg-amber-50 hover:bg-amber-100 text-[#8C3A27] border border-amber-200 rounded-xl text-xs font-semibold flex items-center gap-1.5 w-fit transition-colors">
+            <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Actualizar catálogo
+          </button>
+        </div>
+
+        <div id="catalog-dynamic-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          <p class="col-span-full text-center text-sm text-stone-500 py-10">Cargando artesanías disponibles...</p>
+        </div>
       </div>
     </section>
 
@@ -673,11 +685,93 @@
       lucide.createIcons();
     }
 
+
+    // =========================================================================
+    // CATÁLOGO DINÁMICO DESDE MAKE.COM (PRODUCTOS DISPONIBLES EN AIRTABLE)
+    // =========================================================================
+    const CATALOG_WEBHOOK_URL = "https://hook.us2.make.com/grt8m8ehisok45fbo188k16tzj0vc68d";
+
+    async function cargarCatalogoDisponible() {
+      const grid = document.getElementById("catalog-dynamic-grid");
+      if (!grid) return;
+
+      grid.innerHTML = `<p class="col-span-full text-center text-sm text-stone-500 py-10">Cargando artesanías disponibles...</p>`;
+
+      try {
+        const response = await fetch(CATALOG_WEBHOOK_URL);
+        if (!response.ok) throw new Error("HTTP " + response.status);
+        const data = await response.json();
+        const productos = Array.isArray(data) ? data : (Array.isArray(data.array) ? data.array : []);
+
+        if (productos.length === 0) {
+          grid.innerHTML = `<p class="col-span-full text-center text-sm text-stone-500 py-10">No hay productos disponibles en este momento.</p>`;
+          return;
+        }
+
+        grid.innerHTML = productos.map(p => {
+          const nombre = p["Nombre del Producto"] || p.Producto || p.Name || "Artesanía";
+          const estacion = Array.isArray(p["Estacion de Retiro"])
+            ? p["Estacion de Retiro"][0]
+            : (p["Estacion de Retiro"] || "Quebrada");
+          const artesanoRaw = Array.isArray(p["Artesano"]) ? p["Artesano"][0] : (p["Artesano"] || "");
+          const artesanoLabel = (!artesanoRaw || artesanoRaw.startsWith("rec"))
+            ? `Estación ${estacion}`
+            : artesanoRaw;
+
+          const precioNum = Number(p["Precio ARS"] ?? p.Precio ?? 0);
+          const precio = precioNum.toLocaleString("es-AR");
+
+          const fotos = p["Fotografías"] || p["Fotografias"] || p.Imagen;
+          const foto = Array.isArray(fotos) && fotos[0]
+            ? (fotos[0].thumbnails?.large?.url || fotos[0].url)
+            : (typeof fotos === "string" && fotos ? fotos : "https://placehold.co/400x300/fef3c7/92400e?text=Tren+Solar");
+
+          const whatsappRaw = String(p["Teléfono"] || p["Telefono"] || p["WhatsApp"] || "").replace(/[^0-9]/g, "");
+          const textoWa = encodeURIComponent(`Hola! Viajo en el Tren Solar y me interesa "${nombre}" ($${precio}) con retiro en ${estacion}. ¿Coordinamos la entrega en la estación?`);
+          const waHref = whatsappRaw ? `https://wa.me/${whatsappRaw}?text=${textoWa}` : `https://wa.me/?text=${textoWa}`;
+
+          return `
+            <div class="bg-white rounded-2xl border border-stone-200 overflow-hidden shadow-xs hover:shadow-md transition-all flex flex-col justify-between">
+              <div>
+                <div class="relative h-48 bg-stone-100">
+                  <img src="${foto}" alt="${nombre}" class="w-full h-full object-cover" onerror="handleImgError(this)" />
+                  <span class="absolute top-3 left-3 bg-emerald-600 text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full shadow-xs">
+                    Disponible
+                  </span>
+                </div>
+                <div class="p-4 space-y-1.5">
+                  <h3 class="font-bold text-stone-900 text-base">${nombre}</h3>
+                  <p class="text-xs font-medium text-stone-600 bg-stone-100 inline-block px-2 py-0.5 rounded-md">${artesanoLabel}</p>
+                  <p class="text-lg font-extrabold text-stone-900 pt-1">$${precio}</p>
+                </div>
+              </div>
+              <div class="p-4 pt-0 flex gap-2">
+                <a href="${waHref}" target="_blank" rel="noreferrer"
+                   class="flex-1 py-2.5 px-3 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl text-center transition-colors">
+                  Pedir por WhatsApp
+                </a>
+                <a href="encuentro.html"
+                   class="py-2.5 px-3 bg-amber-100 hover:bg-amber-200 text-[#8C3A27] text-xs font-bold rounded-xl text-center transition-colors">
+                  Seguir Tren
+                </a>
+              </div>
+            </div>
+          `;
+        }).join("");
+
+        lucide.createIcons();
+      } catch (error) {
+        console.error("Error cargando catálogo desde Make:", error);
+        grid.innerHTML = `<p class="col-span-full text-center text-sm text-red-600 py-8">No se pudo conectar con el catálogo. Probá abrirlo desde un servidor local o Vercel y verificá CORS en Make.</p>`;
+      }
+    }
+
     // Inicialización del Renderizado
     function init() {
       renderCategoryButtons();
       renderStationButtons();
       renderCatalog();
+      cargarCatalogoDisponible();
       renderVendorSelector();
       renderVendorPanel();
       renderTrainSchedule();
@@ -853,7 +947,7 @@
 
       try {
         // Si aún no configuraste la URL real de Make, permite probar con un usuario demo local
-        if (MAKE_WEBHOOK_URL.includes("TU_WEBHOOK_ID_AQUI")) {
+        if (MAKE_WEBHOOK_URL.includes("https://hook.us2.make.com/grt8m8ehisok45fbo188k16tzj0vc68d")) {
           await new Promise(r => setTimeout(r, 600));
           if (userInput === "demo" && pinInput === "1234") {
             authenticatedVendor = vendors[0];
