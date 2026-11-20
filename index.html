@@ -925,9 +925,10 @@
     }
 
     // =========================================================================
-    // CONFIGURACIÓN DE WEBHOOK DE MAKE.COM PARA VALIDACIÓN EN AIRTABLE
+    // CONFIGURACIÓN DE WEBHOOKS DE MAKE.COM (LOGIN + DISPONIBILIDAD AIRTABLE)
     // =========================================================================
-    const MAKE_WEBHOOK_URL = "https://hook.us2.make.com/h2vrih8bjwxnklh0po509frr4imqj2st"; // <-- REEMPLAZAR CON TU URL DE MAKE.COM
+    const MAKE_WEBHOOK_URL = "https://hook.us2.make.com/h2vrih8bjwxnklh0po509frr4imqj2st";
+    const AVAILABILITY_WEBHOOK_URL = "PEGAR_AQUI_LA_URL_DEL_WEBHOOK_DISPONIBILIDAD";
     let authenticatedVendor = null;
 
     function renderVendorSelector() {
@@ -946,19 +947,6 @@
       submitBtn.innerHTML = '<span>Verificando en Airtable...</span>';
 
       try {
-        // Si aún no configuraste la URL real de Make, permite probar con un usuario demo local
-        if (MAKE_WEBHOOK_URL.includes("https://hook.us2.make.com/grt8m8ehisok45fbo188k16tzj0vc68d")) {
-          await new Promise(r => setTimeout(r, 600));
-          if (userInput === "demo" && pinInput === "1234") {
-            authenticatedVendor = vendors[0];
-            showAuthenticatedDashboard();
-            return;
-          } else {
-            throw new Error("Configurá tu URL de Make.com en el código (o probá con usuario: demo / PIN: 1234).");
-          }
-        }
-
-        // Llamada real al Webhook de Make.com
         const response = await fetch(MAKE_WEBHOOK_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -975,16 +963,22 @@
 
         const data = await response.json();
 
-        // Se espera que Make responda: { "authenticated": true, "vendor": { ... } }
-        if (data && data.authenticated && data.vendor) {
+        // Soporta respuesta { authenticated: true, vendor: { id, name, category, station, whatsapp, isAvailable, products } }
+        // o respuesta directa con campos del registro de Airtable
+        const vRaw = data.vendor || (data.authenticated ? data : null);
+        if (data && data.authenticated && vRaw) {
+          const dispVal = vRaw.isAvailable !== undefined
+            ? vRaw.isAvailable
+            : (vRaw["disponible"] !== undefined ? vRaw["disponible"] : true);
+
           authenticatedVendor = {
-            id: data.vendor.id || "airtable_v",
-            name: data.vendor.name || "Vendedor Local",
-            category: data.vendor.category || "Artesano",
-            station: data.vendor.station || "Purmamarca",
-            whatsapp: data.vendor.whatsapp || "",
-            isAvailable: data.vendor.isAvailable !== undefined ? data.vendor.isAvailable : true,
-            products: Array.isArray(data.vendor.products) ? data.vendor.products : []
+            id: vRaw.id || vRaw.recordId || vRaw["Nombre y Emprendimiento"] || "",
+            name: vRaw.name || vRaw["Nombre y Emprendimiento"] || userInput,
+            category: vRaw.category || vRaw["Categoría"] || "Artesano",
+            station: vRaw.station || vRaw["Estación"] || "Quebrada",
+            whatsapp: vRaw.whatsapp || vRaw["Link WhatsApp"] || "",
+            isAvailable: Boolean(dispVal),
+            products: Array.isArray(vRaw.products) ? vRaw.products : []
           };
           showAuthenticatedDashboard();
         } else {
@@ -1049,7 +1043,6 @@
         `;
       }
 
-      // Renderizar productos del vendedor
       document.getElementById('vendor-products-title').innerText = `Tus Productos Publicados (${vendor.products.length}/6)`;
       const grid = document.getElementById('vendor-products-grid');
       grid.innerHTML = vendor.products.map(p => `
@@ -1075,24 +1068,37 @@
 
     async function toggleCurrentVendorStock() {
       if (!authenticatedVendor) return;
-      authenticatedVendor.isAvailable = !authenticatedVendor.isAvailable;
+
+      const prevState = authenticatedVendor.isAvailable;
+      const nextState = !prevState;
+      authenticatedVendor.isAvailable = nextState;
       renderVendorPanel();
 
-      // Notificar el cambio de disponibilidad a Make.com para actualizar Airtable
-      if (!MAKE_WEBHOOK_URL.includes("TU_WEBHOOK_ID_AQUI")) {
-        try {
-          await fetch(MAKE_WEBHOOK_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              action: 'toggle_stock',
-              vendorId: authenticatedVendor.id,
-              isAvailable: authenticatedVendor.isAvailable
-            })
-          });
-        } catch (e) {
-          console.error("Error sincronizando disponibilidad con Make:", e);
+      const targetUrl = AVAILABILITY_WEBHOOK_URL.includes("PEGAR_AQUI")
+        ? MAKE_WEBHOOK_URL
+        : AVAILABILITY_WEBHOOK_URL;
+
+      try {
+        const response = await fetch(targetUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'toggle_stock',
+            vendorId: authenticatedVendor.id,
+            vendorName: authenticatedVendor.name,
+            disponible: nextState,
+            isAvailable: nextState
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error("HTTP " + response.status);
         }
+      } catch (e) {
+        console.error("Error sincronizando disponibilidad con Make:", e);
+        authenticatedVendor.isAvailable = prevState;
+        renderVendorPanel();
+        alert("No se pudo actualizar tu disponibilidad en Airtable. Intentá nuevamente en unos segundos.");
       }
     }
 
@@ -1127,7 +1133,6 @@
 
       renderVendorPanel();
 
-      // Enviar nuevo producto a Make.com para crear el registro en Airtable
       if (!MAKE_WEBHOOK_URL.includes("TU_WEBHOOK_ID_AQUI")) {
         try {
           await fetch(MAKE_WEBHOOK_URL, {
@@ -1150,7 +1155,6 @@
       authenticatedVendor.products = authenticatedVendor.products.filter(p => p.id !== prodId);
       renderVendorPanel();
 
-      // Notificar eliminación a Make.com
       if (!MAKE_WEBHOOK_URL.includes("TU_WEBHOOK_ID_AQUI")) {
         try {
           await fetch(MAKE_WEBHOOK_URL, {
